@@ -23,15 +23,12 @@ jobs:
       - name: Set up Python version
         uses: actions/setup-python@v5
         with:
-          python-version: ${{ env.PYTHON_VERSION }}
-
-      - name: Create and start virtual environment
-        run: |        
-          python -m venv venv
-          source venv/bin/activate
+          python-version: ${{ env.PYTHON_VERSION }}     
 
       - name: Install dependencies
         run: |
+          python -m venv venv
+          source venv/bin/activate
           pip install setuptools
           pip install -r requirements.txt
           echo "The uvicorn version installed is:"
