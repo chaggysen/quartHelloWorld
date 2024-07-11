@@ -1,0 +1,11 @@
+@host=http://127.0.0.1:5000
+
+POST /api/ask
+Host: {{host}}
+Content-Type: application/json
+
+{
+    "message": "tools for software development",
+    "k_nearest_neighbors": 1,
+    "selectedFields": ["title", "content", "category"]
+}
