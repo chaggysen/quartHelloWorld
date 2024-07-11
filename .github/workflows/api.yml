@@ -1,0 +1,72 @@
+# This workflow uses actions that are not certified by GitHub.
+# They are provided by a third-party and are governed by
+# separate terms of service, privacy policy, and support
+# documentation.
+
+# GitHub recommends pinning actions to a commit SHA.
+# To get a newer version, you will need to update the SHA.
+# You can also reference a tag or branch, but the action may change without warning.
+
+name: Build and deploy API
+
+env:
+  AZURE_WEBAPP_NAME: ${{ secrets.API_NAME }}   # set this to your application's name
+  PYTHON_VERSION: '3.10'               # set this to the Python version to use
+  API_DIR: 'src/api'                       # set this to the directory containing your API code
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'src/api/**'
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python version
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+
+      - name: Create and start virtual environment
+        run: |        
+          python -m venv venv
+          source venv/bin/activate
+
+      # - name: Set up dependency caching for faster installs
+      #   uses: actions/cache@v3
+      #   with:
+      #     path: ~/.cache/pip
+      #     key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements.txt') }}
+      #     restore-keys: |
+      #       ${{ runner.os }}-pip-
+
+      - name: Install dependencies
+        run: |
+          python -m venv venv
+          source venv/bin/activate
+          pip install setuptools
+          pip install -r requirements.txt    
+          pip install uvicorn
+          pip install gunicorn
+          echo "The uvicorn version installed is:"
+          uvicorn --version                        
+        working-directory: ${{ env.API_DIR }}
+
+      - name: Azure login
+        uses: azure/login@v2        
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+      - name: 'Deploy to Azure Web App'
+        id: deploy-to-webapp
+        uses: azure/webapps-deploy@v2
+        with:
+          app-name: ${{ env.AZURE_WEBAPP_NAME }}
+          package: ${{ env.API_DIR }}
