@@ -1,0 +1,1 @@
+from .health.routes import bp as health_bp
