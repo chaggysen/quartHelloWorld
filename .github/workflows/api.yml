@@ -23,16 +23,16 @@ jobs:
       - name: Set up Python version
         uses: actions/setup-python@v5
         with:
-          python-version: ${{ env.PYTHON_VERSION }}     
+          python-version: ${{ env.PYTHON_VERSION }}
 
-      - name: Install dependencies
+      - name: Install dependencies and package application
         run: |
           python -m venv venv
           source venv/bin/activate
           pip install setuptools
           pip install -r requirements.txt
-          echo "The uvicorn version installed is:"
-          uvicorn --version                           
+          deactivate
+          zip -r app.zip .
         working-directory: ${{ env.API_DIR }}
 
       - name: Azure login
@@ -40,12 +40,11 @@ jobs:
         with:
           creds: ${{ secrets.AZURE_CREDENTIALS }}
 
-      - name: 'Deploy to Azure Web App'
-        id: deploy-to-webapp
+      - name: Deploy to Azure Web App
         uses: azure/webapps-deploy@v2
         with:
           app-name: ${{ env.AZURE_WEBAPP_NAME }}
-          package: ./${{ env.API_DIR }}
+          package: ${{ env.API_DIR }}/app.zip
 
       - name: Restart Azure Web App
         run: |
