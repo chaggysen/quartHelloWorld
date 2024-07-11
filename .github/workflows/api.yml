@@ -24,7 +24,15 @@ jobs:
       - name: Set up Python version
         uses: actions/setup-python@v5
         with:
-          python-version: ${{ env.PYTHON_VERSION }}     
+          python-version: ${{ env.PYTHON_VERSION }}
+
+      - name: Set up dependency caching for faster installs
+        uses: actions/cache@v3
+        with:
+          path: ~/.cache
+          key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements.txt') }}
+          restore-keys: |
+            ${{ runner.os }}-pip-
 
       - name: Install dependencies
         run: |
@@ -35,10 +43,6 @@ jobs:
           echo "The uvicorn version installed is:"
           uvicorn --version                           
         working-directory: ${{ env.API_DIR }}
-
-      - name: Archive application files
-        run: |
-          zip -r app.zip . -x "venv/*" ".git/*" "*/__pycache__/*"
 
       - name: Azure login
         uses: azure/login@v2        
