@@ -36,12 +36,8 @@ jobs:
 
       - name: Install dependencies
         run: |
-          python3 -m venv venv
-          source venv/bin/activate
-          pip install setuptools
-          pip install -r requirements.txt
-          echo "The uvicorn version installed is:"
-          uvicorn --version                           
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt                       
         working-directory: ${{ env.API_DIR }}
 
       - name: Azure login
