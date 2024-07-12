@@ -14,4 +14,4 @@ echo "Which Python: $(which python)"
 echo "Which Gunicorn: $(which gunicorn)"
 echo "Python Path: $(python -c 'import sys; print(sys.path)')"
 
-exec /home/site/wwwroot/venv/bin/gunicorn -c gunicorn.conf.py app:app
+exec gunicorn -c gunicorn.conf.py app:app
