@@ -5,7 +5,12 @@ echo "Current directory: $(pwd)"
 echo "Files in venv/bin:"
 ls -al /home/site/wwwroot/venv/bin/
 
+echo "Activating virtual environment..."
+python3 -m venv /home/site/wwwroot/venv
 source /home/site/wwwroot/venv/bin/activate
+
+echo "Installing requirements..."
+pip install -r requirements.txt
 
 # echo "Setting PATH..."
 # export PATH="/home/site/wwwroot/venv/bin:$PATH"
