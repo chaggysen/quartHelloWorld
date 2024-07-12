@@ -1,3 +1,4 @@
 venv/
 src/api/__pycache__/
 /myenv
+src/api/FINDINGS.TXT
